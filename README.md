@@ -1,2 +1,1 @@
-# HtmlGrapheasTestApp
-The repository is only for code distributing and issue tracking.
+HtmlGrapheasApp is an application for the HtmlGrapheas library testing.

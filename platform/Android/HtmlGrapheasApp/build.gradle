@@ -1,0 +1,175 @@
+/*****************************************************************************
+ * Project:  HtmlGrapheas
+ * Purpose:  HTML text editor library
+ * Author:   NikitaFeodonit, nfeodonit@yandex.com
+ *****************************************************************************
+ *   Copyright (c) 2017-2018 NikitaFeodonit
+ *
+ *    This file is part of the HtmlGrapheas project.
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published
+ *    by the Free Software Foundation, either version 3 of the License,
+ *    or (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *    See the GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program. If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
+
+apply plugin: "com.android.application"
+
+//-----------------------------------------------------------------------
+// Common vars from root project
+//-----------------------------------------------------------------------
+
+def ignoreVariantBuildType = ""
+if (rootProject.hasProperty("ignoreVariantBuildType")) {
+  ignoreVariantBuildType = rootProject.ignoreVariantBuildType
+}
+
+def buildToolsVer = "27.0.3"
+if (rootProject.hasProperty("buildToolsVersion")) {
+  buildToolsVer = rootProject.buildToolsVersion
+}
+
+def compileSdkVer = 26
+if (rootProject.hasProperty("compileSdkVersion")) {
+  compileSdkVer = rootProject.compileSdkVersion
+}
+
+def targetSdkVer = 26
+if (rootProject.hasProperty("targetSdkVersion")) {
+  targetSdkVer = rootProject.targetSdkVersion
+}
+
+def minSdkVer = 16
+if (rootProject.hasProperty("minSdkVersion")) {
+  minSdkVer = rootProject.minSdkVersion
+}
+
+def supportLibVer = "26.1.0"
+if (rootProject.hasProperty("supportLibVersion")) {
+  supportLibVer = rootProject.supportLibVersion
+}
+
+def abiFilts = ["armeabi-v7a", "arm64-v8a", "x86", "x86_64"]
+if (rootProject.hasProperty("abiFilters")) {
+  abiFilts = rootProject.abiFilters
+}
+
+def rootBuildDir = "${rootDir}/build_android/${rootProject.name}"
+if (rootProject.hasProperty("rootBuildDir")) {
+  rootBuildDir = rootProject.rootBuildDir
+}
+
+def rootNativeBuildDir = "${rootBuildDir}/.nativeBuild"
+if (rootProject.hasProperty("rootNativeBuildDir")) {
+  rootNativeBuildDir = rootProject.rootNativeBuildDir
+}
+
+//-----------------------------------------------------------------------
+// Module properties
+//-----------------------------------------------------------------------
+
+// https://stackoverflow.com/a/32129704
+//import com.android.builder.core.BuilderConstants
+android.variantFilter { variant ->
+//  if (build == BuilderConstants.RELEASE) {
+  if (variant.buildType.name == ignoreVariantBuildType) {
+    variant.setIgnore(true)
+  }
+}
+
+android {
+  // DO NOT PUBLIC the file 'keystore.properties' !!!
+  File keystorePropertiesFile = project.file('keystore.properties')
+  if (!keystorePropertiesFile.exists()) {
+    throw new GradleException(
+        "File 'keystore.properties' in the project is not found.")
+  }
+
+  Properties keystoreProperties = new Properties()
+  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+  if (!keystoreProperties.containsKey("storeFile") ||
+      !keystoreProperties.containsKey("storePassword") ||
+      !keystoreProperties.containsKey("keyAlias") ||
+      !keystoreProperties.containsKey("keyPassword")) {
+    throw new GradleException(
+        "Required properties is not set in file 'keystore.properties'.")
+  }
+
+  signingConfigs {
+    releaseKeyConfig {
+      storeFile file(keystoreProperties["storeFile"])
+      storePassword keystoreProperties["storePassword"]
+      keyAlias keystoreProperties["keyAlias"]
+      keyPassword keystoreProperties["keyPassword"]
+    }
+  }
+  compileSdkVersion compileSdkVer
+  buildToolsVersion buildToolsVer
+
+  defaultConfig {
+    applicationId "ru.htmlgrapheas.htmlgrapheasapp"
+    minSdkVersion minSdkVer
+    targetSdkVersion targetSdkVer
+    versionCode 1
+    versionName "1.0"
+    archivesBaseName = "htmlgrapheasapp-${versionName}-rev.${versionCode}"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+  buildTypes {
+    release {
+      debuggable false
+      jniDebuggable false
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+      signingConfig signingConfigs.releaseKeyConfig
+    }
+    debug {
+      debuggable true
+      jniDebuggable true
+    }
+  }
+}
+
+dependencies {
+  implementation fileTree(dir: "libs", include: ["*.jar"])
+  implementation project(":AndroidLogcatStdouts")
+  implementation project(":HtmlGrapheasKamva")
+  implementation "com.android.support:appcompat-v7:${supportLibVer}"
+  implementation "com.android.support.constraint:constraint-layout:1.1.0"
+
+  testImplementation "junit:junit:4.12"
+  androidTestImplementation "com.android.support.test:runner:1.0.2"
+  androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
+}
+
+//-----------------------------------------------------------------------
+// Debug printing
+//-----------------------------------------------------------------------
+
+if (rootProject.hasProperty("buildGradleDebug") &&
+    rootProject.buildGradleDebug) {
+  println "================================================================"
+  println "Properties of module '${project.name}':"
+  println "================================================================"
+  println "ignoreVariantBuildType == ${ignoreVariantBuildType}"
+  println "android.buildToolsVersion == ${android.buildToolsVersion}"
+  println "android.compileSdkVersion == ${android.compileSdkVersion}"
+  println "android.defaultConfig.targetSdkVersion == ${android.defaultConfig.targetSdkVersion}"
+  println "android.defaultConfig.minSdkVersion == ${android.defaultConfig.minSdkVersion}"
+  println "supportLibVer == ${supportLibVer}"
+  println "android.defaultConfig.ndk.abiFilters == ${android.defaultConfig.ndk.abiFilters}"
+  println "android.defaultConfig.externalNativeBuild.cmake.abiFilters == ${android.defaultConfig.externalNativeBuild.cmake.abiFilters}"
+  println "rootBuildDir == ${rootBuildDir}"
+  println "rootProject.allprojects.buildDir == ${rootProject.allprojects.buildDir}"
+  println "project.buildDir == ${project.buildDir}"
+  println "android.externalNativeBuild.cmake.buildStagingDirectory == ${android.externalNativeBuild.cmake.buildStagingDirectory}"
+  println "================================================================"
+}
