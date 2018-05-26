@@ -1,0 +1,9 @@
+[submodule "HtmlGrapheasKamva"]
+	path = HtmlGrapheasKamva
+	url = git@github.com:HtmlGrapheas/HtmlGrapheasKamva.git
+[submodule "platform/Android/AndroidLogcatStdouts"]
+	path = platform/Android/AndroidLogcatStdouts
+	url = git@github.com:NFeoTools/AndroidLogcatStdouts.git
+[submodule "platform/wxWidgets/external/LibCMaker_wxWidgets"]
+	path = platform/wxWidgets/external/LibCMaker_wxWidgets
+	url = git@github.com:LibCMaker/LibCMaker_wxWidgets.git
