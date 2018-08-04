@@ -1,9 +1,6 @@
 [submodule "HtmlGrapheasKamva"]
 	path = HtmlGrapheasKamva
 	url = git@github.com:HtmlGrapheas/HtmlGrapheasKamva.git
-[submodule "platform/Android/AndroidLogcatStdouts"]
-	path = platform/Android/AndroidLogcatStdouts
-	url = git@github.com:NFeoTools/AndroidLogcatStdouts.git
 [submodule "external/android/AndroidLogcatStdouts"]
 	path = external/android/AndroidLogcatStdouts
 	url = git@github.com:NFeoTools/AndroidLogcatStdouts.git

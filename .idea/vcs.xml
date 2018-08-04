@@ -4,6 +4,7 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/HtmlGrapheasKamva" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/HtmlGrapheasKamva/HtmlGrapheas" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/HtmlGrapheasKamva/HtmlGrapheas/external/litehtml" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/HtmlGrapheasKamva/cmake/libcmaker/LibCMaker" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/HtmlGrapheasKamva/cmake/libcmaker/LibCMaker_AGG" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/HtmlGrapheasKamva/cmake/libcmaker/LibCMaker_Dirent" vcs="Git" />
